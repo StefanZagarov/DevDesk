@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build Outputs
+dist
+build
+out
+
+# Secrets & Environment (CRITICAL)
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS Junk
+.DS_Store
+Thumbs.db
+
+# Docker volumes (if you mapped them locally)
+postgres_data
