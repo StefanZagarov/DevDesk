@@ -8,8 +8,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Translate raw bites into a javascript object
 app.use(express.json());
-app.use("/api/resources", resourceRoutes)
+// When we receive url address starting with this, we use resourceRoutes to handle it
+app.use("/api/v1/resources", resourceRoutes)
 
 const start = async () => {
   await testDbConnection();

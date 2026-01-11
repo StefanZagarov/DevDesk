@@ -1,4 +1,4 @@
-// A simple script to run the SQL against our database
+// A simple script to run the SQL against our database. This script rebuilds our database schema by running the selected .sql file
 
 import fs from "fs";
 import path from "path";
