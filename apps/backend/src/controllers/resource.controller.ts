@@ -1,30 +1,36 @@
 import { Request, Response } from "express";
 import { ResourceModel } from "../models/resource.model";
+import { CreateResourceSchema } from "@devdesk/shared";
+import { z } from "@devdesk/shared";
 
 export const createResource = async (req: Request, res: Response) => {
   try {
-    // TODO: We will add Zod validation here in the next step
-    const { title, description, type, content, tags } = req.body;
+    // Validation Layer
+    const validatedData = CreateResourceSchema.parse(req.body);
 
-    // Basic check
-    if (!title || !type || !content) {
-      res.status(400).json({ error: "Missing required fields" });
-      return;
-    }
-
+    // Data Layer
     const newResource = await ResourceModel.create({
-      title,
-      description,
-      type,
-      content,
-      tags
+      title: validatedData.title,
+      description: validatedData.description,
+      type: validatedData.type,
+      content: validatedData.content,
+      tags: validatedData.tags,
     });
 
     res.status(201).json({
       status: "success",
-      data: newResource
+      data: newResource,
     });
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json({
+        status: "error",
+        message: "Validation failed",
+        errors: err.issues,
+      });
+      return;
+    }
+
     console.error("Error creating resource:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }

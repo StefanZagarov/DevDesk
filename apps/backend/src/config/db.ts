@@ -19,10 +19,10 @@ export const pool = new Pool({
 export const testDbConnection = async () => {
   try {
     const client = await pool.connect();
-    console.log("✅ Database connected successfully");
+    console.log("Database connected successfully");
     client.release(); // VERY IMPORTANT: Always release the client back to the pool
   } catch (err) {
-    console.error("❌ Database connection failed:", err);
+    console.error("Database connection failed:", err);
     process.exit(1); // Fail hard if DB is down
   }
 };

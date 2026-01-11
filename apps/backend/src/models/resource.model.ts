@@ -7,6 +7,7 @@ export class ResourceModel {
   ): Promise<Resource> {
     const { title, description, type, content, tags } = resource;
 
+    // We used Parameterized Queries ($1, $2, $3). The pg library sends the query template first, then sends the data separately. This makes it mathematically impossible for a hacker to inject malicious SQL commands
     const query = `
       INSERT INTO resources (title, description, type, content, tags)
       VALUES ($1, $2, $3, $4, $5)
