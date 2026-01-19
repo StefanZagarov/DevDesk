@@ -1,6 +1,7 @@
 import { z } from "zod";
 const URL_REGEX =
   /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 // Common Input Fields
 const BaseCreateSchema = z.object({
@@ -56,5 +57,23 @@ export const CreateResourceSchema = z.discriminatedUnion("type", [
     content: PdfResourceContentSchema,
   }),
 ]);
+
+// User form schema
+
+export const RegisterSchema = z.object({
+  email: z.string().regex(EMAIL_REGEX, { message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  name: z.string().min(2).optional(),
+});
+
+export const LoginSchema = z.object({
+  email: z.string().regex(EMAIL_REGEX, { message: "Invalid email address" }),
+  password: z.string(),
+});
+
+export type RegisterInput = z.infer<typeof RegisterSchema>;
+export type LoginInput = z.infer<typeof LoginSchema>;
 
 export type CreateResourceInput = z.infer<typeof CreateResourceSchema>;
