@@ -11,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
     const existingUser = await UserModel.findByEmail(validatedData.email);
     if (existingUser) {
       res.status(409).json({
-        statis: "error",
+        status: "error",
         message: "Email already in use",
       });
       return;
