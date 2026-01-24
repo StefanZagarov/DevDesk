@@ -59,7 +59,6 @@ export const CreateResourceSchema = z.discriminatedUnion("type", [
 ]);
 
 // User form schema
-
 export const RegisterSchema = z.object({
   email: z.string().regex(EMAIL_REGEX, { message: "Invalid email address" }),
   password: z

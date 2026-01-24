@@ -5,6 +5,6 @@ export async function toHash(password: string) {
   return bcrypt.hash(password, salt);
 }
 
-export async function compare(storedHash: string, suppliedPassword: string) {
-  return bcrypt.compare(suppliedPassword, storedHash);
+export async function compare(candidatePassword: string, passwordHash: string) {
+  return bcrypt.compare(candidatePassword, passwordHash);
 }
