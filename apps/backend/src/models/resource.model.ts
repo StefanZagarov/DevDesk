@@ -3,14 +3,15 @@ import type { Resource } from "@devdesk/shared";
 
 export class ResourceModel {
   static async create(
-    resource: Omit<Resource, "id" | "createdAt" | "updatedAt">,
+    resource: Omit<Resource, "id" | "createdAt" | "updatedAt" | "userId">,
+    userId: string,
   ): Promise<Resource> {
     const { title, description, type, content, tags } = resource;
 
     // We used Parameterized Queries ($1, $2, $3). The pg library sends the query template first, then sends the data separately. This makes it mathematically impossible for a hacker to inject malicious SQL commands
     const query = `
-      INSERT INTO resources (title, description, type, content, tags)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO resources (title, description, type, content, tags, user_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
@@ -20,6 +21,7 @@ export class ResourceModel {
       type,
       JSON.stringify(content), // Convert JS object to JSON string for Postgres
       tags || [],
+      userId,
     ];
 
     const result = await pool.query(query, values);

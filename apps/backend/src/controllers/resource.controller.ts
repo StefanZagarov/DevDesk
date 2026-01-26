@@ -8,14 +8,15 @@ export const createResource = async (req: Request, res: Response) => {
     // Validation Layer
     const validatedData = CreateResourceSchema.parse(req.body);
 
+    if (!req.user) {
+      res
+        .status(401)
+        .json({ error: "Unauthorized resource creation: No user provided." });
+      return;
+    }
+
     // Data Layer
-    const newResource = await ResourceModel.create({
-      title: validatedData.title,
-      description: validatedData.description,
-      type: validatedData.type,
-      content: validatedData.content,
-      tags: validatedData.tags,
-    });
+    const newResource = await ResourceModel.create(validatedData, req.user.id);
 
     res.status(201).json({
       status: "success",

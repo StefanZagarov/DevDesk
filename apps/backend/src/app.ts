@@ -4,6 +4,7 @@ import cors from "cors";
 import { testDbConnection } from "./config/db";
 import resourceRoutes from "./routes/resource.routes";
 import authRoutes from "./routes/auth.routes";
+import { requireAuth } from "./middleware/auth.middleware";
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 // When we receive url address starting with this, we use resourceRoutes to handle it
-app.use("/api/v1/resources", resourceRoutes);
+app.use("/api/v1/resources", requireAuth, resourceRoutes);
 app.use("/api/v1/auth", authRoutes);
 
 app.get("/health", (_, res) => {

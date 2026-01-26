@@ -12,7 +12,12 @@
             "@devdesk/shared": [
                 "../../packages/shared/src/index.ts"
             ]
-        }
+        },
+        // ADD THIS SECTION
+        "typeRoots": [
+            "./src/types",
+            "./node_modules/@types"
+        ]
     },
     "include": [
         "src/**/*"
