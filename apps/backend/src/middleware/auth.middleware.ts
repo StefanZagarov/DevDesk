@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { UnauthorizedError } from "src/utils/errors";
 
 const JWT_SECRET = process.env.JWT_ACCESS_SECRET || "default_secret";
 
@@ -17,18 +18,14 @@ export const requireAuth = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    res
-      .status(401)
-      .json({ status: "error", message: "Authorization header missing" });
-    return;
+    return next(new UnauthorizedError("Authorization header missing"));
   }
 
   // Parse the Bearer <token>
-  const token = authHeader.split(" ")[1];
+  const token = authHeader!.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({ status: "error", message: "Token is missing" });
-    return;
+    return next(new UnauthorizedError("Token is missing"));
   }
 
   try {
@@ -43,8 +40,6 @@ export const requireAuth = (
     next();
   } catch (error) {
     console.log("Auth Middleware Error:", error);
-    res
-      .status(403)
-      .json({ status: "error", message: "Invalid or expired token" });
+    next(new UnauthorizedError("Invalid or expired token"));
   }
 };
