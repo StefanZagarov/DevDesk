@@ -4,7 +4,18 @@ import { UserModel } from "../models/user.model";
 import { toHash, compare } from "../utils/password";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { asyncHandler } from "src/utils/asyncHandler";
-import { ConflictError, UnauthorizedError } from "src/utils/errors";
+import {
+  ConflictError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "src/utils/errors";
+import {
+  createRefreshToken,
+  deleteRefreshToken,
+  findValidRefreshToken,
+} from "src/models/refreshToken.model";
+import jwt from "jsonwebtoken";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const validatedData = RegisterSchema.parse(req.body);
@@ -19,6 +30,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const accessToken = generateAccessToken(newUser);
   const refreshToken = generateRefreshToken(newUser);
+  await createRefreshToken(newUser.id, refreshToken);
 
   res.status(201).json({
     status: "success",
@@ -42,6 +54,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
+  await createRefreshToken(user.id, refreshToken);
 
   // If user exists and password is correct, then we proceed to create a sanitized user object which we will return, making sure we do not send any sensitive data like the hashed password
   const safeUser = {
@@ -59,5 +72,47 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       accessToken,
       refreshToken,
     },
+  });
+});
+
+export const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) throw new ValidationError("Refresh token is required");
+
+  const storedToken = await findValidRefreshToken(refreshToken);
+  if (!storedToken)
+    throw new UnauthorizedError("Invalid or expired refresh token");
+
+  // Verify the JWT signature, make sure it was not tampered with
+  let payload;
+  try {
+    payload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET!,
+    ) as jwt.JwtPayload;
+  } catch {
+    // If tampered or malformed - delete from DB
+    await deleteRefreshToken(refreshToken);
+    throw new UnauthorizedError("Invalid refresh token");
+  }
+  const user = await UserModel.findById(payload.id);
+  if (!user) throw new NotFoundError("No user found");
+  const accessToken = generateAccessToken(user);
+
+  res.json({
+    status: "success",
+    data: { accessToken },
+  });
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (refreshToken) await deleteRefreshToken(refreshToken);
+
+  res.json({
+    status: "success",
+    message: "Logged out successfully",
   });
 });

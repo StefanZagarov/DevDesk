@@ -1,5 +1,5 @@
 function toCamelCase(str: string): string {
-  return str.replace(/_[a-z]/g, (_, letter) => letter.toUpperCase());
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 }
 
 export function mapRow(row: Record<string, any>): Record<string, any> {

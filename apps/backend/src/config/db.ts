@@ -9,7 +9,6 @@ export const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  // Senior Configs:
   max: 20, // Max clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
