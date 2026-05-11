@@ -5,6 +5,10 @@ export interface BaseResource {
   title: string;
   description?: string;
   tags: string[];
+  category?: string;
+  isFavorite: boolean;
+  isArchived: boolean;
+  lastAccessedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

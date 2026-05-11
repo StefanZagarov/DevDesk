@@ -58,6 +58,18 @@ export const CreateResourceSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
+export const UpdateResourceSchema = z
+  .object({
+    title: z.string().min(1, "Title is required").max(100),
+    description: z.string().optional(),
+    tags: z.array(z.string()),
+    category: z.string().optional(),
+    isFavorite: z.boolean(),
+    isArchived: z.boolean(),
+    content: z.record(z.string(), z.any()),
+  })
+  .partial();
+
 // User form schema
 export const RegisterSchema = z.object({
   email: z.string().regex(EMAIL_REGEX, { message: "Invalid email address" }),
@@ -76,3 +88,4 @@ export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 
 export type CreateResourceInput = z.infer<typeof CreateResourceSchema>;
+export type UpdateResourceInput = z.infer<typeof UpdateResourceSchema>;
