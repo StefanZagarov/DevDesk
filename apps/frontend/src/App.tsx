@@ -1,9 +1,18 @@
-function App() {
+import { Routes, Route } from "react-router-dom";
+import { routes } from "./routes/routes";
+
+function populateRoutes() {
   return (
-    <>
-      <h1 className="text-4xl"> Welcome to DevDesk </h1>
-    </>
+    <Routes>
+      {routes.map(({ path, element }, index) => (
+        <Route key={index} path={path} element={element} />
+      ))}
+    </Routes>
   );
+}
+
+function App() {
+  return populateRoutes();
 }
 
 export default App;
