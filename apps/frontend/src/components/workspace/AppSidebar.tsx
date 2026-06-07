@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "../ui/sidebar";
+import { Logo } from "../ui/Logo";
 
 // Example structure
 const items = [
@@ -105,6 +106,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <div className="self-center pb-2">
+        <Logo />
+      </div>
     </Sidebar>
   );
 }

@@ -1,6 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/workspace/AppSidebar";
-import { CardsField } from "@/components/workspace/CardsField";
+import { CardsPanel } from "@/components/workspace/CardsPanel";
 import { Topbar } from "@/components/workspace/Topbar";
 
 export function MainWorkspace() {
@@ -10,7 +10,7 @@ export function MainWorkspace() {
       <div className="flex flex-1">
         <AppSidebar />
         <main className="flex flex-1 flex-col">
-          <CardsField />
+          <CardsPanel />
         </main>
       </div>
     </SidebarProvider>
